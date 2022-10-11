@@ -1,20 +1,15 @@
+
 from typing import List
-from fastapi import Depends, FastAPI, UploadFile, File
+
+from fastapi import APIRouter, Depends, UploadFile, File
 
 from models.emails import EmailRequest
 from utils_mail.system_utils import execute_multipart_emailing_service, preprocess_request
-from routes.services import router
 
-app = FastAPI()
+router = APIRouter()
 
 
-@app.get("/")
-def root():
-    return {
-        "msg" : "ok"
-    }
-
-@app.post("/send-email", tags=[f'Email Request'])
+@router.post("/send-email", tags=[f'Email Request'])
 async def sending_email_with_file_attachments(email_request: EmailRequest = Depends(EmailRequest.as_form),
                                                                     files: List[UploadFile] = File([])):
     """
@@ -26,5 +21,3 @@ async def sending_email_with_file_attachments(email_request: EmailRequest = Depe
     response = await execute_multipart_emailing_service(files, email_request_dict)
     
     return response['result']
-
-app.include_router(router)
