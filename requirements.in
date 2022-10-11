@@ -1,0 +1,5 @@
+fastapi
+boto3
+aiofiles
+python-multipart
+uvicorn
